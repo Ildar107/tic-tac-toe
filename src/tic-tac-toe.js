@@ -10,6 +10,8 @@ class TicTacToe {
     }
 
     nextTurn(rowIndex, columnIndex) {
+        if(this.matrix[rowIndex * this.rang + columnIndex] !== null)
+            return;
         this.matrix[rowIndex * this.rang + columnIndex]  = this.currentSymbol;
         if(this.currentSymbol === "x")
             this.currentSymbol = "o";
@@ -19,7 +21,7 @@ class TicTacToe {
     }
 
     isFinished() {
-        return this.getWinner() !== null
+        return this.getWinner() !== null || this.isDraw() === true;
     }
 
     getWinner() {
@@ -27,19 +29,22 @@ class TicTacToe {
         var column = "";
         var crossF = "";
         var crossB = "";
-        for(let i = 0; j < this.matrix.length; j++)
+        for(let i = 0; i < this.matrix.length; i++)
         {
+            if(i % this.rang === 0)
+                row = "";
             row += this.matrix[i];
             if( row === "xxx" || row === "ooo")
                 return row[0];
-            if(i !== 0 && i % 3 === 0)g
-                row = "";
-            if(i % 2 === 0)
-                crossF = this.matrix[i];
+            column = this.matrix[i] + this.matrix[i + this.rang] + this.matrix[i + this.rang * 2];
+            if(column === "xxx" || column === "ooo")
+                return column[0];
+            if(i > 0 && i % 2 === 0 && crossF.length !== this.rang)
+                crossF += this.matrix[i];
             if(i % 4 === 0)
-                crossB = this.matrix[i];
+                crossB += this.matrix[i];
         }
-
+        
         if( crossF === "xxx" || crossF === "ooo")
             return crossF[0];
         if( crossB === "xxx" || crossB === "ooo")
@@ -48,18 +53,15 @@ class TicTacToe {
     }
 
     noMoreTurns() {
-        return this.matrix[i].findIndex(null) > 0;
+        return this.matrix.findIndex(x=> x === null) === -1;
     }
 
     isDraw() {
-        if(!this.noMoreTurns())
-            return false;
-        
-        
+        return this.noMoreTurns() && this.getWinner() === null;
     }
 
     getFieldValue(rowIndex, colIndex) {
-        return this.matrix[rowIndex][colIndex];
+        return this.matrix[rowIndex * this.rang + colIndex];
     }
 }
 
